@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orders — Wanjiru Bakery</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#7B3F00" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Wanjiru Orders" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-logo"><i class="fa-solid fa-bread-slice"></i></span>
+        Wanjiru Bakery
+      </div>
+      <nav class="nav-links">
+        <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="orders.html" class="active"><i class="fa-solid fa-clipboard-list"></i> Orders</a>
+        <a href="new-order.html"><i class="fa-solid fa-plus"></i> New Order</a>
+        <a href="suppliers.html"><i class="fa-solid fa-truck"></i> Suppliers</a>
+      </nav>
+      <div class="sidebar-footer">
+        Supplier Order Tracking<br />Capstone Project · 2026
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+          <div class="greeting" id="greeting">Hello, Staff</div>
+          <div class="date-display" id="dateDisplay"></div>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-primary btn-sm" id="installBtn" style="display:none;">
+            <i class="fa-solid fa-download"></i> Install App
+          </button>
+          <button class="btn btn-secondary btn-sm" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="section-head">
+          <div>
+            <h1 class="page-title">Supplier Orders</h1>
+            <p class="page-subtitle">Track, filter and update every supplier order.</p>
+          </div>
+          <a href="new-order.html" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> New Order
+          </a>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="search-input">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search supplier or item…" />
+          </div>
+          <input type="date" id="dateFrom" class="form-control" style="max-width:160px;" title="From date" />
+          <input type="date" id="dateTo" class="form-control" style="max-width:160px;" title="To date" />
+        </div>
+
+        <div class="filter-tabs" id="statusTabs">
+          <button class="filter-tab active" data-status="all">All</button>
+          <button class="filter-tab" data-status="pending">Pending</button>
+          <button class="filter-tab" data-status="confirmed">Confirmed</button>
+          <button class="filter-tab" data-status="delivered">Delivered</button>
+          <button class="filter-tab" data-status="cancelled">Cancelled</button>
+        </div>
+
+        <!-- Orders table -->
+        <div class="card mt-2">
+          <div class="table-wrap">
+            <table class="data-table" id="ordersTable">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Supplier</th>
+                  <th>Item &amp; Quantity</th>
+                  <th>Date Placed</th>
+                  <th>Expected Date</th>
+                  <th>Cost</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ordersBody">
+                <tr><td colspan="8" class="text-muted">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Status Update Modal -->
+  <div class="modal-backdrop" id="statusModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Update Order Status</h3>
+        <button class="modal-close" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted mb-1" id="statusModalSub">Change the status of this order.</p>
+        <input type="hidden" id="statusOrderId" />
+        <div class="form-group">
+          <label class="form-label" for="statusSelect">New Status</label>
+          <select id="statusSelect" class="form-control">
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="deliveryNotes">Delivery Notes (invoice / received qty)</label>
+          <textarea id="deliveryNotes" class="form-control" rows="3"
+                    placeholder="e.g. Invoice UM-5521, received 10 bags"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button class="btn btn-primary" id="saveStatusBtn">Save Status</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Details Modal -->
+  <div class="modal-backdrop" id="detailsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Order Details</h3>
+        <button class="modal-close" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="detailsBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete confirmation -->
+  <div class="modal-backdrop" id="deleteModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Cancel / Delete Order</h3>
+        <button class="modal-close" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete order <span id="deleteOrderId" class="cell-mono"></span>? This cannot be undone.</p>
+        <input type="hidden" id="deleteOrderIdVal" />
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal>Keep Order</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/orders.js"></script>
+  <script src="js/pwa.js"></script>
+  <script>
+    document.getElementById("logoutBtn").addEventListener("click", () => Auth.logout());
+  </script>
+</body>
+</html>

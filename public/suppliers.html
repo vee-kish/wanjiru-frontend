@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Suppliers — Wanjiru Bakery</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#7B3F00" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Wanjiru Orders" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-logo"><i class="fa-solid fa-bread-slice"></i></span>
+        Wanjiru Bakery
+      </div>
+      <nav class="nav-links">
+        <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="orders.html"><i class="fa-solid fa-clipboard-list"></i> Orders</a>
+        <a href="new-order.html"><i class="fa-solid fa-plus"></i> New Order</a>
+        <a href="suppliers.html" class="active"><i class="fa-solid fa-truck"></i> Suppliers</a>
+      </nav>
+      <div class="sidebar-footer">
+        Supplier Order Tracking<br />Capstone Project · 2026
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+          <div class="greeting" id="greeting">Hello, Staff</div>
+          <div class="date-display" id="dateDisplay"></div>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-primary btn-sm" id="installBtn" style="display:none;">
+            <i class="fa-solid fa-download"></i> Install App
+          </button>
+          <button class="btn btn-secondary btn-sm" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="section-head">
+          <div>
+            <h1 class="page-title">Supplier Directory</h1>
+            <p class="page-subtitle">Manage your raw-material suppliers.</p>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-input" style="flex:1;">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="supplierSearch" placeholder="Search suppliers…" />
+          </div>
+          <button class="btn btn-primary" id="addSupplierBtn">
+            <i class="fa-solid fa-plus"></i> Add Supplier
+          </button>
+        </div>
+
+        <div class="supplier-grid" id="supplierGrid">
+          <div class="text-muted">Loading suppliers…</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Add / Edit Supplier Modal -->
+  <div class="modal-backdrop" id="supplierModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="supplierModalTitle">Add Supplier</h3>
+        <button class="modal-close" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="supplierId" />
+        <div class="form-group">
+          <label class="form-label" for="s_name">Supplier Name <span class="req">*</span></label>
+          <input type="text" id="s_name" class="form-control" placeholder="e.g. Unga Millers" />
+          <div class="form-help">Supplier name is required.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="s_phone">Phone Number <span class="req">*</span></label>
+          <input type="tel" id="s_phone" class="form-control" placeholder="+2547…" />
+          <div class="form-help">Phone number is required.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="s_email">Email</label>
+          <input type="email" id="s_email" class="form-control" placeholder="sales@supplier.co.ke" />
+          <div class="form-help">Enter a valid email.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="s_category">Category / Products <span class="req">*</span></label>
+          <input type="text" id="s_category" class="form-control" placeholder="e.g. Flour & Grains" />
+          <div class="form-help">Category is required.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button class="btn btn-primary" id="saveSupplierBtn">Save Supplier</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete confirmation -->
+  <div class="modal-backdrop" id="deleteSupplierModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Remove Supplier</h3>
+        <button class="modal-close" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p>Remove <span id="deleteSupplierName" class="cell-mono"></span> from the directory?</p>
+        <input type="hidden" id="deleteSupplierId" />
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button class="btn btn-danger" id="confirmDeleteSupplierBtn">Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/suppliers.js"></script>
+  <script src="js/pwa.js"></script>
+  <script>
+    document.getElementById("logoutBtn").addEventListener("click", () => Auth.logout());
+  </script>
+</body>
+</html>

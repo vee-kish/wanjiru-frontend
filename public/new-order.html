@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Order — Wanjiru Bakery</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#7B3F00" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Wanjiru Orders" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-logo"><i class="fa-solid fa-bread-slice"></i></span>
+        Wanjiru Bakery
+      </div>
+      <nav class="nav-links">
+        <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="orders.html"><i class="fa-solid fa-clipboard-list"></i> Orders</a>
+        <a href="new-order.html" class="active"><i class="fa-solid fa-plus"></i> New Order</a>
+        <a href="suppliers.html"><i class="fa-solid fa-truck"></i> Suppliers</a>
+      </nav>
+      <div class="sidebar-footer">
+        Supplier Order Tracking<br />Capstone Project · 2026
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+          <div class="greeting" id="greeting">Hello, Staff</div>
+          <div class="date-display" id="dateDisplay"></div>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-primary btn-sm" id="installBtn" style="display:none;">
+            <i class="fa-solid fa-download"></i> Install App
+          </button>
+          <button class="btn btn-secondary btn-sm" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="section-head">
+          <div>
+            <h1 class="page-title">Record New Supplier Order</h1>
+            <p class="page-subtitle">Capture a purchase order for raw materials.</p>
+          </div>
+        </div>
+
+        <!-- Duplicate warning banner -->
+        <div id="dupAlert" class="alert alert-warning is-hidden">
+          <i class="fa-solid fa-triangle-exclamation alert-icon"></i>
+          <span id="dupAlertMsg"></span>
+        </div>
+
+        <div class="card" style="max-width:760px;">
+          <form id="orderForm" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="supplier">Supplier <span class="req">*</span></label>
+              <select id="supplier" name="supplier" class="form-control">
+                <option value="">Select a supplier…</option>
+              </select>
+              <div class="form-help">Please choose a supplier.</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="item">Item / Raw Material <span class="req">*</span></label>
+              <input type="text" id="item" name="item" class="form-control"
+                     placeholder="e.g. Baking Flour 50kg, Sugar, Yeast, Cooking Fat" />
+              <div class="form-help">Item name is required.</div>
+            </div>
+
+            <div class="row-2">
+              <div class="form-group">
+                <label class="form-label" for="quantity">Quantity <span class="req">*</span></label>
+                <input type="number" id="quantity" name="quantity" min="1" class="form-control" placeholder="e.g. 10" />
+                <div class="form-help">Enter a valid quantity.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="unit">Unit <span class="req">*</span></label>
+                <select id="unit" name="unit" class="form-control">
+                  <option value="">Select unit…</option>
+                  <option>Bags</option>
+                  <option>Bales</option>
+                  <option>Tins</option>
+                  <option>Litres</option>
+                  <option>Packets</option>
+                  <option>Cartons</option>
+                  <option>Kg</option>
+                  <option>Other</option>
+                </select>
+                <div class="form-help">Choose a unit of measure.</div>
+              </div>
+            </div>
+
+            <div class="row-2">
+              <div class="form-group">
+                <label class="form-label" for="expected_date">Expected Delivery <span class="req">*</span></label>
+                <input type="datetime-local" id="expected_date" name="expected_date" class="form-control" />
+                <div class="form-help">Expected delivery date &amp; time is required.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cost">Estimated Cost (Ksh) <span class="req">*</span></label>
+                <input type="number" id="cost" name="cost" min="0" step="0.01" class="form-control" placeholder="e.g. 18500" />
+                <div class="form-help">Enter the estimated cost.</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="notes">Special Instructions / Notes</label>
+              <textarea id="notes" name="notes" class="form-control" rows="3"
+                        placeholder="e.g. Deliver to back gate, mention invoice number…"></textarea>
+            </div>
+
+            <div class="d-flex gap-1 flex-wrap mt-1">
+              <button type="submit" class="btn btn-primary" id="submitBtn">
+                <i class="fa-solid fa-paper-plane"></i> Save &amp; Submit Order
+              </button>
+              <button type="button" class="btn btn-secondary" id="clearBtn">
+                <i class="fa-solid fa-eraser"></i> Clear Form
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/new-order.js"></script>
+  <script src="js/pwa.js"></script>
+  <script>
+    document.getElementById("logoutBtn").addEventListener("click", () => Auth.logout());
+  </script>
+</body>
+</html>

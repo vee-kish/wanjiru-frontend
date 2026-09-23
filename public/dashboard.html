@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Wanjiru Bakery</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#7B3F00" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Wanjiru Orders" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-logo"><i class="fa-solid fa-bread-slice"></i></span>
+        Wanjiru Bakery
+      </div>
+      <nav class="nav-links">
+        <a href="dashboard.html" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="orders.html"><i class="fa-solid fa-clipboard-list"></i> Orders</a>
+        <a href="new-order.html"><i class="fa-solid fa-plus"></i> New Order</a>
+        <a href="suppliers.html"><i class="fa-solid fa-truck"></i> Suppliers</a>
+      </nav>
+      <div class="sidebar-footer">
+        Supplier Order Tracking<br />Capstone Project · 2026
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main -->
+    <div class="main">
+      <header class="topbar">
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+          <div class="greeting" id="greeting">Hello, Staff</div>
+          <div class="date-display" id="dateDisplay"></div>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-primary btn-sm" id="installBtn" style="display:none;">
+            <i class="fa-solid fa-download"></i> Install App
+          </button>
+          <button class="btn btn-secondary btn-sm" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="section-head">
+          <div>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Overview of supplier orders and daily activity.</p>
+          </div>
+        </div>
+
+        <!-- KPI cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon i-total"><i class="fa-solid fa-clipboard-list"></i></div>
+            <div>
+              <div class="kpi-value" id="kpiTotal">0</div>
+              <div class="kpi-label">Total Orders Placed</div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon i-pending"><i class="fa-solid fa-hourglass-half"></i></div>
+            <div>
+              <div class="kpi-value" id="kpiPending">0</div>
+              <div class="kpi-label">Pending / Unconfirmed</div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon i-confirmed"><i class="fa-solid fa-check-to-slot"></i></div>
+            <div>
+              <div class="kpi-value" id="kpiConfirmed">0</div>
+              <div class="kpi-label">Confirmed (Awaiting)</div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon i-delivered"><i class="fa-solid fa-truck-fast"></i></div>
+            <div>
+              <div class="kpi-value" id="kpiDeliveredToday">0</div>
+              <div class="kpi-label">Delivered Today</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="quick-actions">
+          <a href="new-order.html" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> Place New Supplier Order
+          </a>
+          <button class="btn btn-secondary" id="printSummary">
+            <i class="fa-solid fa-print"></i> Export / Print Daily Summary
+          </button>
+        </div>
+
+        <!-- Recent orders -->
+        <div class="card">
+          <div class="section-head">
+            <h2 style="font-size:1.1rem;"><i class="fa-solid fa-clock-rotate-left"></i> Recent Orders</h2>
+            <a href="orders.html" class="btn btn-ghost btn-sm">View all <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" id="recentTable">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Supplier</th>
+                  <th>Item &amp; Quantity</th>
+                  <th>Expected Date</th>
+                  <th>Cost</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recentBody">
+                <tr><td colspan="6" class="text-muted">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Mobile nav + toast scaffolding -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/pwa.js"></script>
+  <script>
+    document.getElementById("logoutBtn").addEventListener("click", () => Auth.logout());
+  </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+/* ============================================================
+   Wanjiru Bakery — Responsive styles
+   Mobile-first refinements & breakpoints
+   ============================================================ */
+
+/* ---------- Tablet (<= 1024px) ---------- */
+@media (max-width: 1024px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---------- Mobile drawer nav (<= 860px) ---------- */
+@media (max-width: 860px) {
+  .hamburger {
+    display: inline-flex;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 90;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(31, 41, 55, 0.4);
+    z-index: 80;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+  }
+
+  .sidebar-overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .content {
+    padding: 1.1rem;
+  }
+
+  .topbar {
+    padding: 0.8rem 1.1rem;
+  }
+}
+
+/* ---------- Small phones (<= 600px) ---------- */
+@media (max-width: 600px) {
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .kpi-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+
+  .kpi-value {
+    font-size: 1.3rem;
+  }
+
+  /* Convert data tables into stacked "cards" for readability */
+  table.data-table thead {
+    display: none;
+  }
+
+  table.data-table,
+  table.data-table tbody,
+  table.data-table tr,
+  table.data-table td {
+    display: block;
+    width: 100%;
+  }
+
+  table.data-table tr {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-bottom: 0.85rem;
+    padding: 0.4rem 0.6rem;
+    background: #fff;
+    box-shadow: var(--shadow-sm);
+  }
+
+  table.data-table td {
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0.3rem;
+    text-align: right;
+  }
+
+  table.data-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: var(--color-brown);
+    text-align: left;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .row-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar .date-display {
+    display: none;
+  }
+
+  .quick-actions .btn {
+    flex: 1;
+  }
+
+  .section-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .auth-card {
+    padding: 1.6rem 1.3rem;
+  }
+
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
+  }
+}
+
+/* ---------- Very small (<= 380px) ---------- */
+@media (max-width: 380px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-tabs .filter-tab {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.8rem;
+  }
+}

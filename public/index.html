@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wanjiru Bakery — Staff Sign In</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#7B3F00" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Wanjiru Orders" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="brand">
+        <span class="brand-logo"><i class="fa-solid fa-bread-slice"></i></span>
+        <span>Wanjiru Bakery</span>
+      </div>
+
+      <div class="auth-header">
+        <h1>Supplier Order Tracking</h1>
+        <p>Nyeri · Staff Sign In</p>
+      </div>
+
+      <!-- Feedback banner -->
+      <div id="authAlert" class="alert alert-danger is-hidden" role="alert">
+        <i class="fa-solid fa-circle-exclamation alert-icon"></i>
+        <span id="authAlertMsg"></span>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="email">Email / Username <span class="req">*</span></label>
+          <input type="text" id="email" name="email" class="form-control"
+                 placeholder="mama@wanjiru.co.ke" autocomplete="username" />
+          <div class="form-help">Please enter your email or username.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password <span class="req">*</span></label>
+          <div class="password-wrap">
+            <input type="password" id="password" name="password" class="form-control"
+                   placeholder="••••••••" autocomplete="current-password" />
+            <button type="button" class="password-toggle" id="togglePassword"
+                    aria-label="Show password">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <div class="form-help">Password is required.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Signing in as</label>
+          <div class="role-indicator">
+            <div class="role-chip active" data-role="Staff"><i class="fa-solid fa-user"></i> Staff</div>
+            <div class="role-chip" data-role="Owner"><i class="fa-solid fa-user-tie"></i> Owner</div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="loginBtn" style="width:100%;">
+          <span id="loginBtnText">Sign In</span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <i class="fa-solid fa-lock"></i> Secured session · Capstone Project 2026
+        <div class="mt-1">
+          <button class="btn btn-secondary btn-sm" id="installBtn" style="display:none;">
+            <i class="fa-solid fa-download"></i> Install App
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/pwa.js"></script>
+  <script>
+    /* ---------- Role selector ---------- */
+    let selectedRole = "Staff";
+    document.querySelectorAll(".role-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".role-chip").forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+        selectedRole = chip.dataset.role;
+      });
+    });
+
+    /* ---------- Password show/hide ---------- */
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+    togglePassword.addEventListener("click", () => {
+      const isPwd = passwordInput.type === "password";
+      passwordInput.type = isPwd ? "text" : "password";
+      togglePassword.innerHTML = isPwd
+        ? '<i class="fa-solid fa-eye-slash"></i>'
+        : '<i class="fa-solid fa-eye"></i>';
+      togglePassword.setAttribute("aria-label", isPwd ? "Hide password" : "Show password");
+    });
+
+    /* ---------- Login handler ---------- */
+    const form = document.getElementById("loginForm");
+    const alertEl = document.getElementById("authAlert");
+    const alertMsg = document.getElementById("authAlertMsg");
+    const loginBtn = document.getElementById("loginBtn");
+    const loginBtnText = document.getElementById("loginBtnText");
+
+    function showAlert(msg) {
+      alertMsg.textContent = msg;
+      alertEl.classList.remove("is-hidden");
+    }
+    function hideAlert() {
+      alertEl.classList.add("is-hidden");
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      let valid = true;
+      const emailEl = document.getElementById("email");
+      const pwdEl = document.getElementById("password");
+
+      if (!email) { emailEl.classList.add("is-invalid"); valid = false; }
+      else emailEl.classList.remove("is-invalid");
+
+      if (!password) { pwdEl.classList.add("is-invalid"); valid = false; }
+      else pwdEl.classList.remove("is-invalid");
+
+      if (!valid) return;
+
+      loginBtn.disabled = true;
+      loginBtn.classList.add("is-loading");
+      loginBtnText.innerHTML = '<span class="spinner"></span> Signing in…';
+
+      try {
+        const data = await AuthAPI.login({ email, password, role: selectedRole });
+        Auth.setSession(data.token, data.user);
+        window.location.href = "dashboard.html";
+      } catch (err) {
+        showAlert(err.message || "Unable to sign in. Check your credentials or try again.");
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.classList.remove("is-loading");
+        loginBtnText.textContent = "Sign In";
+      }
+    });
+  </script>
+</body>
+</html>
